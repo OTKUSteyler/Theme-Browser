@@ -6,7 +6,7 @@ const { ScrollView, View, Text, Image } = React;
 
 interface ThemeInfo { name: string; author: string; preview: string; source: string; }
 
-async function fetchThemes(): Promise<ThemeInfo[]> { const res = await fetch("https://raw.githubusercontent.com/nexpid/Themelings/data/list.json"); if (!res.ok) throw new Error("Failed to fetch themes"); return await res.json(); }
+async function fetchThemes(): Promise<ThemeInfo[]> { const res = await fetch("https://discord.com/channels/1205207689832038522/1205876424188104715"); if (!res.ok) throw new Error("Failed to fetch themes"); return await res.json(); }
 
 function ThemeBrowser(): React.ReactElement { const [themes, setThemes] = React.useState<ThemeInfo[]>([]);
 

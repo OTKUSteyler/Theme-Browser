@@ -1,21 +1,26 @@
-// Plain JavaScript/TypeScript version of a theme browser plugin (no JSX/TSX)
-// Make sure "./utils" exists or adjust import path as needed
 import { createSection, showToast } from "./utils";
+
+// Define the Theme type for strong typing
+interface Theme {
+  name: string;
+  author: string;
+  css: string;
+  preview?: string;
+  demo?: string;
+}
 
 const ThemeBrowser = {
   name: "ThemeBrowser",
   description: "Browse and apply community themes",
   settings: {
     searchQuery: "",
-    themes: [],
+    themes: [] as Theme[],
   },
 
-  // Loads themes from a sample public JSON
   async loadThemes() {
     try {
-      const response = await fetch(
-        "https://raw.githubusercontent.com/nexpid/Themelings/data/themes.json"
-      );
+      // URL to your themes.json (replace with your own data file if needed)
+      const response = await fetch("https://raw.githubusercontent.com/nexpid/Themelings/data/themes.json");
       this.settings.themes = await response.json();
       this.render();
     } catch (err) {
@@ -24,12 +29,10 @@ const ThemeBrowser = {
     }
   },
 
-  // Renders the plugin UI
   render() {
     const container = document.createElement("div");
     container.style.padding = "10px";
 
-    // Search box
     const input = document.createElement("input");
     input.placeholder = "Search";
     input.style.padding = "5px";
@@ -43,20 +46,16 @@ const ThemeBrowser = {
     };
     container.appendChild(input);
 
-    // List output
     const listContainer = document.createElement("div");
     listContainer.id = "theme-list";
     container.appendChild(listContainer);
 
-    // Populate list
     this.renderList(container);
 
-    // Add section
     createSection("Theme Repo", container);
   },
 
-  // Renders the theme cards
-  renderList(container) {
+  renderList(container: HTMLElement) {
     const list = container.querySelector("#theme-list");
     if (!list) return;
     list.innerHTML = "";
@@ -73,13 +72,11 @@ const ThemeBrowser = {
       card.style.marginBottom = "10px";
       card.style.backgroundColor = "#202225";
 
-      // Theme title
       const title = document.createElement("h3");
-      title.textContent = theme.name + " by " + theme.author;
+      title.textContent = `${theme.name} by ${theme.author}`;
       title.style.color = "#fff";
       card.appendChild(title);
 
-      // Optional preview image
       if (theme.preview) {
         const img = document.createElement("img");
         img.src = theme.preview;
@@ -90,18 +87,18 @@ const ThemeBrowser = {
         card.appendChild(img);
       }
 
-      // Example website/demo link (add your own field if needed)
-      const demoUrl = theme.demo || "https://example.com"; // Replace or extend as needed!
-      const demoLink = document.createElement("a");
-      demoLink.href = demoUrl;
-      demoLink.target = "_blank";
-      demoLink.style.display = "inline-block";
-      demoLink.style.marginTop = "8px";
-      demoLink.style.color = "#00bfff";
-      demoLink.textContent = "View demo website";
-      card.appendChild(demoLink);
+      // Example website/demo link
+      if (theme.demo) {
+        const demoLink = document.createElement("a");
+        demoLink.href = theme.demo;
+        demoLink.target = "_blank";
+        demoLink.style.display = "inline-block";
+        demoLink.style.marginTop = "8px";
+        demoLink.style.color = "#00bfff";
+        demoLink.textContent = "View demo website";
+        card.appendChild(demoLink);
+      }
 
-      // Apply button
       const applyBtn = document.createElement("button");
       applyBtn.textContent = "Apply";
       applyBtn.style.marginTop = "10px";
@@ -112,16 +109,16 @@ const ThemeBrowser = {
     }
   },
 
-  // Applies the selected theme
-  applyTheme(theme) {
+  applyTheme(theme: Theme) {
     if (!theme.css) return showToast("No CSS to apply", "error");
 
-    const style =
-      document.getElementById("dynamic-theme-style") ||
-      document.createElement("style");
-    style.id = "dynamic-theme-style";
+    let style = document.getElementById("dynamic-theme-style") as HTMLStyleElement | null;
+    if (!style) {
+      style = document.createElement("style");
+      style.id = "dynamic-theme-style";
+      document.head.appendChild(style);
+    }
     style.textContent = theme.css;
-    document.head.appendChild(style);
     showToast(`Applied theme: ${theme.name}`, "success");
   },
 
@@ -136,3 +133,6 @@ const ThemeBrowser = {
 };
 
 export default ThemeBrowser;
+
+// Optionally, start the plugin automatically if this script is loaded directly
+ThemeBrowser.start();

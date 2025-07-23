@@ -1,4 +1,5 @@
 import { createSection, showToast } from "./utils";
+import { React } from "@vendetta/metro/common";
 
 interface Theme {
   name: string;

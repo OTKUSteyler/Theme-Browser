@@ -1,6 +1,5 @@
 import { createSection, showToast } from "./utils";
 
-// The type for a Theme
 interface Theme {
   name: string;
   author: string;
@@ -21,15 +20,13 @@ const ThemeBrowser = {
     try {
       const response = await fetch("https://raw.githubusercontent.com/nexpid/Themelings/data/themes.json");
       this.settings.themes = await response.json();
-      // After loading, trigger initial render (if used outside React wrapper)
-      this.render();
+      // Don't call this.render() here if using React wrapper
     } catch (err) {
       showToast("Failed to load themes", "error");
       console.error(err);
     }
   },
 
-  // NOW: Accepts optional container for React wrapper
   render(container?: HTMLElement) {
     if (!container) {
       container = document.createElement("div");
@@ -37,7 +34,6 @@ const ThemeBrowser = {
     }
     container.innerHTML = "";
 
-    // Search box
     const input = document.createElement("input");
     input.placeholder = "Search";
     input.style.padding = "5px";
@@ -51,12 +47,10 @@ const ThemeBrowser = {
     };
     container.appendChild(input);
 
-    // List output
     const listContainer = document.createElement("div");
     listContainer.id = "theme-list";
     container.appendChild(listContainer);
 
-    // Populate list
     this.renderList(container);
   },
 

@@ -1,6 +1,6 @@
-// Plain JavaScript version of a theme browser like Plugins-List (no JSX/TSX)
-
-import { createSection, showToast } from "@utils";
+// Plain JavaScript/TypeScript version of a theme browser plugin (no JSX/TSX)
+// Make sure "./utils" exists or adjust import path as needed
+import { createSection, showToast } from "./utils";
 
 const ThemeBrowser = {
   name: "ThemeBrowser",
@@ -10,9 +10,12 @@ const ThemeBrowser = {
     themes: [],
   },
 
+  // Loads themes from a sample public JSON
   async loadThemes() {
     try {
-      const response = await fetch("hold text");
+      const response = await fetch(
+        "https://raw.githubusercontent.com/nexpid/Themelings/data/themes.json"
+      );
       this.settings.themes = await response.json();
       this.render();
     } catch (err) {
@@ -21,10 +24,12 @@ const ThemeBrowser = {
     }
   },
 
+  // Renders the plugin UI
   render() {
     const container = document.createElement("div");
     container.style.padding = "10px";
 
+    // Search box
     const input = document.createElement("input");
     input.placeholder = "Search";
     input.style.padding = "5px";
@@ -36,18 +41,21 @@ const ThemeBrowser = {
       this.settings.searchQuery = input.value.toLowerCase();
       this.renderList(container);
     };
-
     container.appendChild(input);
 
+    // List output
     const listContainer = document.createElement("div");
     listContainer.id = "theme-list";
     container.appendChild(listContainer);
 
+    // Populate list
     this.renderList(container);
 
+    // Add section
     createSection("Theme Repo", container);
   },
 
+  // Renders the theme cards
   renderList(container) {
     const list = container.querySelector("#theme-list");
     if (!list) return;
@@ -65,11 +73,13 @@ const ThemeBrowser = {
       card.style.marginBottom = "10px";
       card.style.backgroundColor = "#202225";
 
+      // Theme title
       const title = document.createElement("h3");
       title.textContent = theme.name + " by " + theme.author;
       title.style.color = "#fff";
       card.appendChild(title);
 
+      // Optional preview image
       if (theme.preview) {
         const img = document.createElement("img");
         img.src = theme.preview;
@@ -80,6 +90,18 @@ const ThemeBrowser = {
         card.appendChild(img);
       }
 
+      // Example website/demo link (add your own field if needed)
+      const demoUrl = theme.demo || "https://example.com"; // Replace or extend as needed!
+      const demoLink = document.createElement("a");
+      demoLink.href = demoUrl;
+      demoLink.target = "_blank";
+      demoLink.style.display = "inline-block";
+      demoLink.style.marginTop = "8px";
+      demoLink.style.color = "#00bfff";
+      demoLink.textContent = "View demo website";
+      card.appendChild(demoLink);
+
+      // Apply button
       const applyBtn = document.createElement("button");
       applyBtn.textContent = "Apply";
       applyBtn.style.marginTop = "10px";
@@ -90,10 +112,13 @@ const ThemeBrowser = {
     }
   },
 
+  // Applies the selected theme
   applyTheme(theme) {
     if (!theme.css) return showToast("No CSS to apply", "error");
 
-    const style = document.getElementById("dynamic-theme-style") || document.createElement("style");
+    const style =
+      document.getElementById("dynamic-theme-style") ||
+      document.createElement("style");
     style.id = "dynamic-theme-style";
     style.textContent = theme.css;
     document.head.appendChild(style);

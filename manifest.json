@@ -1,1 +1,1 @@
-{"name":"Template Plugin","description":"A plugin for use as a template.","authors":[{"name":"You!","id":"YOUR_ID_HERE"}],"main":"index.js","vendetta":{"icon":"ic_badge_staff"},"hash":"6cb6594aa032b83a1f24c2bb3d63e8aeb8e1652e0361e7d7a0e415850cc9c406"}
+{"name":"Theme-Browser","description":"A plugin based of Plugin list.","authors":[{"name":"btmc727","id":"554071670143451176"}],"main":"index.js","vendetta":{"icon":"ChannelListMagnifyingGlassIcon"},"hash":"23c9310fe82a52fc0b4fe174f21584f4dc61a9a356275ef8f51e6106c7640abb"}

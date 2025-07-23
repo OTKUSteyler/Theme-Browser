@@ -1,6 +1,6 @@
 import { createSection, showToast } from "./utils";
 
-// Define the Theme type for strong typing
+// The type for a Theme
 interface Theme {
   name: string;
   author: string;
@@ -19,9 +19,9 @@ const ThemeBrowser = {
 
   async loadThemes() {
     try {
-      // URL to your themes.json (replace with your own data file if needed)
       const response = await fetch("https://raw.githubusercontent.com/nexpid/Themelings/data/themes.json");
       this.settings.themes = await response.json();
+      // After loading, trigger initial render (if used outside React wrapper)
       this.render();
     } catch (err) {
       showToast("Failed to load themes", "error");
@@ -29,10 +29,15 @@ const ThemeBrowser = {
     }
   },
 
-  render() {
-    const container = document.createElement("div");
-    container.style.padding = "10px";
+  // NOW: Accepts optional container for React wrapper
+  render(container?: HTMLElement) {
+    if (!container) {
+      container = document.createElement("div");
+      createSection("Theme Repo", container);
+    }
+    container.innerHTML = "";
 
+    // Search box
     const input = document.createElement("input");
     input.placeholder = "Search";
     input.style.padding = "5px";
@@ -42,17 +47,17 @@ const ThemeBrowser = {
     input.style.backgroundColor = "#2f3136";
     input.oninput = () => {
       this.settings.searchQuery = input.value.toLowerCase();
-      this.renderList(container);
+      this.renderList(container!);
     };
     container.appendChild(input);
 
+    // List output
     const listContainer = document.createElement("div");
     listContainer.id = "theme-list";
     container.appendChild(listContainer);
 
+    // Populate list
     this.renderList(container);
-
-    createSection("Theme Repo", container);
   },
 
   renderList(container: HTMLElement) {
@@ -87,7 +92,6 @@ const ThemeBrowser = {
         card.appendChild(img);
       }
 
-      // Example website/demo link
       if (theme.demo) {
         const demoLink = document.createElement("a");
         demoLink.href = theme.demo;
@@ -133,6 +137,3 @@ const ThemeBrowser = {
 };
 
 export default ThemeBrowser;
-
-// Optionally, start the plugin automatically if this script is loaded directly
-ThemeBrowser.start();
